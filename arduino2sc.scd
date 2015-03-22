@@ -14,9 +14,15 @@ s.boot;
 	msgs.do{
 		arg it, ix;
 		datasplit = it.split($:);
+
 		//Ultrasonic Sensor to ~kbs[0]
 		if(datasplit[0] == "Us1", {
 			~kbs[0].set( datasplit[1].asFloat.linlin(6, 60, 0.0, 1.0) );
+		});
+
+		//Capacitive Switch to ~kbs[1]
+		if(datasplit[0] == "sw1", {
+			~kbs[1].set(datasplit[1].asInteger);
 		});
 
 		if(datasplit[0] == "AcX", {
@@ -27,16 +33,18 @@ s.boot;
 };
 
 SynthDef(\sensine, {
-	arg pitchlo=48, pitchhi=72;
-	var sig, freq;
+	arg pitchlo=48, pitchhi=72, gate=0;
+	var sig, freq, env;
+	env = EnvGen.ar(Env.asr(), gate);
 	freq = \pitch.kr(0.5, 0.08).linlin(0.0, 1.0, pitchlo, pitchhi).midicps;
 	sig = SinOsc.ar(freq);
-	Out.ar(0, sig);
+	Out.ar(0, sig*env);
 }).add;
 )
 
 a = Synth(\sensine);
 a.map(\pitch, ~kbs[0]);
+a.map(\gate, ~kbs[1]);
 
 a.free;
 
