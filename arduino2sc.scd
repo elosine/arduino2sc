@@ -22,7 +22,12 @@ s.boot;
 
 		//Capacitive Switch to ~kbs[1]
 		if(datasplit[0] == "sw1", {
-			~kbs[1].set(datasplit[1].asInteger);
+			~kbs[1].set(datasplit[1].asFloat);
+		});
+
+		//Potentiometer to ~kbs[2]
+		if(datasplit[0] == "Po1", {
+			~kbs[2].set(datasplit[1].asFloat.linlin(0.0, 1023.0, 0.0, 1.0));
 		});
 
 		if(datasplit[0] == "AcX", {
@@ -33,7 +38,7 @@ s.boot;
 };
 
 SynthDef(\sensine, {
-	arg pitchlo=48, pitchhi=72, gate=0;
+	arg pitchlo=48, pitchhi=72, gate=1;
 	var sig, freq, env;
 	env = EnvGen.ar(Env.asr(), gate);
 	freq = \pitch.kr(0.5, 0.08).linlin(0.0, 1.0, pitchlo, pitchhi).midicps;
@@ -45,6 +50,7 @@ SynthDef(\sensine, {
 a = Synth(\sensine);
 a.map(\pitch, ~kbs[0]);
 a.map(\gate, ~kbs[1]);
+a.map(\pitch, ~kbs[2]);
 
 a.free;
 
