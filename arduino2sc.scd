@@ -2,7 +2,7 @@ SerialPort.listDevices;
 
 s.boot;
 (
-~ino = ArduinoSMS("/dev/tty.usbserial-AE015JNX", 115200);
+~ino = ArduinoSMS("/dev/tty.usbserial-AE015JNX", 9600);
 ~kbs = {Bus.control(s)}!50;
 )
 (
